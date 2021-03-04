@@ -188,6 +188,15 @@ SETUP_ARGUMENT_SPEC = dict(
     roworderdragging=dict(required=False, type='bool'),
     logincss=dict(required=False, type='str'),
     loginshowhost=dict(required=False, type='bool'),
+    protocol=dict(required=False, type='str', choices=['http', 'https']),
+    noautocomplete=dict(required=False, type='str'),
+    # 'ssl-certref'=dict(required=False, type='str'),
+    port=dict(required=False, type='int'),
+    max_procs=dict(required=False, type='int'),
+    noantilockout=dict(required=False, type='str'),
+    backend=dict(required=False, type='str'),
+    authmode=dict(required=False, type='str'),
+    session_timeout=dict(required=False, type='int'),
 )
 
 
@@ -324,6 +333,17 @@ class PFSenseSetupModule(PFSenseModuleBase):
         _set_param(webgui, 'dashboardcolumns')
         _set_param_bool(webgui, 'requirestatefilter')
 
+        _set_param(webgui, 'protocol')
+        _set_param(webgui, 'noautocomplete')
+        # if params.get('ssl-certref') is not None:
+        #     webgui['ssl-certref'] = params['ssl_certref']
+        _set_param(webgui, 'port')
+        _set_param(webgui, 'max_procs')
+        _set_param(webgui, 'loginoantilockoutncss')
+        _set_param(webgui, 'backend')
+        _set_param(webgui, 'authmode')
+        _set_param(webgui, 'session_timeout')
+
         _set_param_bool(obj, 'dnsallowoverride')
         _set_param_bool(obj, 'dnslocalhost')
 
@@ -377,6 +397,25 @@ class PFSenseSetupModule(PFSenseModuleBase):
         if params.get('timeservers') is not None:
             for timeserver in params['timeservers'].split(' '):
                 self._validate_hostname(timeserver, 'timeserver')
+
+        # if params.get('protocol') is not None:
+        #     pass
+        # if params.get('noautocomplete') is not None:
+        #     pass
+        # if params.get('ssl_certref') is not None:
+        #     pass
+        # if params.get('port') is not None:
+        #     pass
+        # if params.get('max_procs') is not None:
+        #     pass
+        # if params.get('noantilockout') is not None:
+        #     pass
+        # if params.get('backend') is not None:
+        #     pass
+        # if params.get('authmode') is not None:
+        #     pass
+        # if params.get('session_timeout') is not None:
+        #     pass
 
         # DNS
         ip_types = []
@@ -449,7 +488,7 @@ class PFSenseSetupModule(PFSenseModuleBase):
 
         params = ['interfacessort', 'webguileftcolumnhyper', 'disablealiaspopupdetail', 'dashboardavailablewidgetspanel', 'systemlogsfilterpanel']
         params += ['systemlogsmanagelogpanel', 'statusmonitoringsettingspanel', 'roworderdragging', 'loginshowhost', 'webguifixedmenu']
-        params += ['requirestatefilter']
+        params += ['requirestatefilter', 'session_timeout']
         for param in params:
             if self.pfsense.remove_deleted_param_from_elt(webgui_elt, param, webgui):
                 changed = True
@@ -544,6 +583,16 @@ $retval |= system_ntp_configure();'''
         values += self.format_updated_cli_field(webgui, bwebgui, 'roworderdragging', fvalue=self.fvalue_bool, add_comma=(values), log_none=False)
         values += self.format_updated_cli_field(webgui, bwebgui, 'logincss', add_comma=(values), log_none=False)
         values += self.format_updated_cli_field(webgui, bwebgui, 'loginshowhost', fvalue=self.fvalue_bool, add_comma=(values), log_none=False)
+
+        values += self.format_updated_cli_field(webgui, bwebgui, 'protocol', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'noautocomplete', add_comma=(values), log_none=False)
+        # values += self.format_updated_cli_field(webgui, bwebgui, 'ssl_certref', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'port', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'max_procs', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'noantilockout', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'backend', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'authmode', add_comma=(values), log_none=False)
+        values += self.format_updated_cli_field(webgui, bwebgui, 'session_timeout', add_comma=(values), log_none=False)
 
         return values
 
